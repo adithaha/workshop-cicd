@@ -2,23 +2,13 @@
 https://github.com/adithaha/workshop-cicd.git
 
 
-# Simple PHP Website
 
-## Deploy on OpenShift with Pipeline
+### login
 
-### deploy in development
-
-oc new-project development  
-(create ssh secret with name redhat-id via gui)  
-oc new-app --image-stream=openshift/php:5.6 --code=https://gitlab.com/redhat-id/kai/sample-php-website.git --name=sample-php-website --source-secret=redhat-id  
-oc expose svc sample-php-website  
-
-### deploy in testing
+oc login -u userx https://master.jakarta-e3ab.open.redhat.com
 
 oc tag userx-dev/sample-php-website:latest userx-dev/sample-php-website:promoteToQA  
 oc policy add-role-to-group system:image-puller system:serviceaccounts:userx-test -n userx-dev  
-
-### deploy in production
 
 oc tag userx-dev/sample-php-website:promoteToQA userx-dev/sample-php-website:promoteToProd  
 oc policy add-role-to-group system:image-puller system:serviceaccounts:userx-prod -n userx-dev  
