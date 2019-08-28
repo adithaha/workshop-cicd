@@ -23,7 +23,7 @@ deploy image sample-php-website:promoteToQA  ke userx-test
 
 oc tag userx-dev/sample-php-website:promoteToQA userx-dev/sample-php-website:promoteToProd  
 
-buat project userx-prod
+buat project userx-prod  
 oc policy add-role-to-group system:image-puller system:serviceaccounts:userx-prod -n userx-dev  
 
 deploy image sample-php-website:promoteToProd  ke userx-prod
