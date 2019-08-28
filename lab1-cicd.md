@@ -30,10 +30,10 @@ deploy image sample-php-website:promoteToProd  ke userx-prod
 
 ### using pipeline 
 
-oc new-project cicd  
-oc policy add-role-to-user edit system:serviceaccount:cicd:jenkins -n userx-dev  
-oc policy add-role-to-user edit system:serviceaccount:cicd:jenkins -n userx-test    
-oc policy add-role-to-user edit system:serviceaccount:cicd:jenkins -n userx-prod  
+oc new-project userx-cicd  
+oc policy add-role-to-user edit system:serviceaccount:userx-cicd:jenkins -n userx-dev  
+oc policy add-role-to-user edit system:serviceaccount:userx-cicd:jenkins -n userx-test    
+oc policy add-role-to-user edit system:serviceaccount:userx-cicd:jenkins -n userx-prod  
 (import pipeline-sample-php-website.yaml)  
 (modify jenkinsfile)  
 
