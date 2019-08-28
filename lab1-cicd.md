@@ -10,6 +10,8 @@ oc login -u userx https://master.jakarta-e3ab.open.redhat.com
 oc project userx-dev  
 oc tag userx-dev/sample-php-website:latest userx-dev/sample-php-website:promoteToQA  
 
+buat project userx-test
+
 
 oc policy add-role-to-group system:image-puller system:serviceaccounts:userx-test -n userx-dev  
 
