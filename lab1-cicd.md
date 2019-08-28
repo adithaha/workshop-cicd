@@ -35,7 +35,7 @@ oc policy add-role-to-user edit system:serviceaccount:user0-cicd:jenkins -n user
 oc policy add-role-to-user edit system:serviceaccount:userx-cicd:jenkins -n userx-test    
 oc policy add-role-to-user edit system:serviceaccount:userx-cicd:jenkins -n userx-prod  
 (import pipeline-sample-php-website.yaml) - https://github.com/adithaha/workshop-cicd/raw/master/sample-php-website/pipeline-sample-php-website.yaml  
-(modify jenkinsfile)  
+(modify jenkinsfile) - https://github.com/adithaha/workshop-cicd/raw/master/sample-php-website/jenkinsfile  
 
 ### webhook
 
