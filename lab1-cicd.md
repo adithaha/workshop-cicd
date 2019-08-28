@@ -31,10 +31,10 @@ deploy image sample-php-website:promoteToProd  ke userx-prod
 ### using pipeline 
 
 oc new-project userx-cicd  
-oc policy add-role-to-user edit system:serviceaccount:userx-cicd:jenkins -n userx-dev  
+oc policy add-role-to-user edit system:serviceaccount:user0-cicd:jenkins -n user0-dev  
 oc policy add-role-to-user edit system:serviceaccount:userx-cicd:jenkins -n userx-test    
 oc policy add-role-to-user edit system:serviceaccount:userx-cicd:jenkins -n userx-prod  
-(import pipeline-sample-php-website.yaml)  
+(import pipeline-sample-php-website.yaml) - https://github.com/adithaha/workshop-cicd/raw/master/sample-php-website/pipeline-sample-php-website.yaml  
 (modify jenkinsfile)  
 
 ### webhook
