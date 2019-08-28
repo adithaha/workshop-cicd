@@ -1,0 +1,17 @@
+node('') {
+stage 'Build'
+openshiftBuild(namespace: 'development', buildConfig: 'sample-php-website', showBuildLogs: 'true')
+stage 'Deploy to Development'
+openshiftDeploy(namespace: 'development', deploymentConfig: 'sample-php-website')
+openshiftScale(namespace: 'development', deploymentConfig: 'sample-php-website',replicaCount: '1')
+stage 'Promote to Testing'
+input 'Promote to Testing?'
+openshiftTag(namespace: 'development', sourceStream: 'sample-php-website',  sourceTag: 'latest', destinationStream: 'sample-php-website', destinationTag: 'promoteToQA')
+openshiftDeploy(namespace: 'testing', deploymentConfig: 'sample-php-website', )
+openshiftScale(namespace: 'testing', deploymentConfig: 'sample-php-website',replicaCount: '1')
+stage 'Promote to Production'
+input 'Promote to Production?'
+openshiftTag(namespace: 'development', sourceStream: 'sample-php-website',  sourceTag: 'promoteToQA', destinationStream: 'sample-php-website', destinationTag: 'promoteToProd')
+openshiftDeploy(namespace: 'production', deploymentConfig: 'sample-php-website', )
+openshiftScale(namespace: 'production', deploymentConfig: 'sample-php-website',replicaCount: '1')
+}
