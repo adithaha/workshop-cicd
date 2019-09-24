@@ -189,7 +189,7 @@ https://master.jakarta-e3ab.open.redhat.com
 Build - Pipelines - jenkinsfile (pipeline-sample-php-website)
 ```
 
-### Check the pipeline
+### Try out the pipeline
 
 1. Go to pipeline
 ```
