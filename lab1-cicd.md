@@ -180,14 +180,16 @@ with this:
 ```
 7. Jenkins will take some time before it ready to process pipeline
 ```
-oc get pod | grep build
+oc get pod | grep jenkins
 ```
-Note pod name, tail build log
+There are multiple pod, pick one with name without "-deploy" and status running, note pod name , tail its log
 ```
 oc logs -f <pod-name> --tail=100
 ```
-Wait until message "Push successful" before continue
-
+Wait until message below before continue to next section
+```
+INFO: Created job userx-cicd-pipeline-sample-php-website from BuildConfig NamespaceName{userx-cicd:pipeline-sample-php-website} with revision: xxxxxxxd
+```
 
 ### Walkthrough the configurations via web console
 
