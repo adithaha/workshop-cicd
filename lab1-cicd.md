@@ -156,9 +156,6 @@ Replace jenkinsfile below:
         node() {
         stage 'build'
         openshiftBuild(buildConfig: 'myphp', showBuildLogs: 'true')
-        stage 'deploy'
-        openshiftDeploy(deploymentConfig: 'myphp')
-        openshiftScale(deploymentConfig: 'myphp',replicaCount: '2')
         }
 ```
 with this:
