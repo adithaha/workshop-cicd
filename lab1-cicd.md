@@ -94,7 +94,7 @@ Now we will create CI/CD pipeline with step below:
 ```
 1. Build - build application image and push it to DEV env
 2. Deploy to Development - deploy image from #1 to DEV env
-3. Promote to Testing (approval) - tag image from #1 to promoteToQA, and deploy to TEST env
+3. Promote to Testing (approval) - asking user approval, if approved, tag image from #1 to promoteToQA, and deploy to TEST env
 4. Deploy to Production (approval) - asking user approval, if approved, tag image from #3 to promoteToProd, and deploy to PROD env
 ```
 
