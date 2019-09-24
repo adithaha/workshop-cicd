@@ -7,23 +7,23 @@ https://github.com/adithaha/workshop-cicd.git
 
 1. Login into openshift (you need openshift web url correctly)
 ```
-$ oc login -u userx https://master.jakarta-e3ab.open.redhat.com
+oc login -u userx https://master.jakarta-e3ab.open.redhat.com
 ```
 2. Create development project
 ```
-$ oc new-project userx-dev
+oc new-project userx-dev
 ```
 3. Create new application deployment using PHP image and source code from git
 ```
-$ oc new-app php:7.1~https://github.com/adithaha/workshop-cicd.git --context-dir=/sample-php-website --name=sample-php-website
+oc new-app php:7.1~https://github.com/adithaha/workshop-cicd.git --context-dir=/sample-php-website --name=sample-php-website
 ```
 4. Create route to the application with port mapping 8080
 ```
-$ oc expose service sample-php-website --name=sample-php-website --port=8080
+oc expose service sample-php-website --name=sample-php-website --port=8080
 ```
 5. Check if application is deployed correctly in dev environment
 ```
-$ oc get route
+oc get route
 ```
 Note the application host url, open it in a browser. You should able to see sample PHP application web page (dev)
 
@@ -48,11 +48,11 @@ oc new-app --image-stream=userx-dev/sample-php-website:promoteToQA --name=sample
 ```
 5. Create route to the application with port mapping 8080
 ```
-$ oc expose service sample-php-website --name=sample-php-website --port=8080
+oc expose service sample-php-website --name=sample-php-website --port=8080
 ```
 6. Check if application is deployed correctly in test environment
 ```
-$ oc get route
+oc get route
 ```
 Note the application host url, open it in a browser. You should able to see sample PHP application web page (test)
 
@@ -106,18 +106,40 @@ oc new-project userx-cicd
 ```
 2. Deploy Jenkins application
 ```
-oc new-app --template=jenkins-ephemeral 
+oc new-app --template=jenkins-ephemeral
 ```
+3. Set CPU and Memory resources for Jenkins 
+```
+oc edit dc/jenkins
+```
+Replace existing resource below:
+```
+        resources:
+          limits:
+            memory: 512Mi
+```          
+With this:       
+```
+        resources:
+          limits:
+            cpu: '2'
+            memory: 2Gi
+          requests:
+            cpu: '1'
+            memory: 1Gi      
+```
+
 3. Add edit role from userx-cicd:jenkins to userx-dev, userx-test and userx-prod
 ```
 oc policy add-role-to-user edit system:serviceaccount:userx-cicd:jenkins -n userx-dev  
 oc policy add-role-to-user edit system:serviceaccount:userx-cicd:jenkins -n userx-test    
 oc policy add-role-to-user edit system:serviceaccount:userx-cicd:jenkins -n userx-prod  
 ```
-oc new-project userx-cicd  
-oc policy add-role-to-user edit system:serviceaccount:user0-cicd:jenkins -n user0-dev  
-oc policy add-role-to-user edit system:serviceaccount:userx-cicd:jenkins -n userx-test    
-oc policy add-role-to-user edit system:serviceaccount:userx-cicd:jenkins -n userx-prod  
+4. import pipeline yaml from https://raw.githubusercontent.com/adithaha/workshop-cicd/master/sample-php-website/pipeline-sample-php-website.yaml
+```
+oc create -f https://raw.githubusercontent.com/adithaha/workshop-cicd/master/sample-php-website/pipeline-sample-php-website.yaml
+```
+
 (import pipeline-sample-php-website.yaml) - https://github.com/adithaha/workshop-cicd/raw/master/sample-php-website/pipeline-sample-php-website.yaml  
 (modify jenkinsfile) - https://github.com/adithaha/workshop-cicd/raw/master/sample-php-website/jenkinsfile  
 
