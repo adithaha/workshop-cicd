@@ -1,9 +1,7 @@
 
-https://github.com/adithaha/workshop-cicd.git
-
+Note: For all procedure below, replace all userx to your user account, eg. user4.
 
 ### Configure deployment on development environment
-
 
 1. Login into openshift (you need openshift web url correctly)
 ```
@@ -204,7 +202,7 @@ Promote to Testing? Proceed
 Build - Deploy to Development - Promote to Testing - Promote to Production (Input Required)
 ```
 6. Approve Promote to Production, procedure is similar to #4
-7. Now pipeline process is completed
+7. Now pipeline process is completed, is you see some errors, recheck the step again in section Configure Pipeline
 
 ### Scenario 1: sample application is changed in DEV, but not approved in TEST
 
