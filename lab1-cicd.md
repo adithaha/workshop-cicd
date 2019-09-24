@@ -147,38 +147,7 @@ oc policy add-role-to-user edit system:serviceaccount:userx-cicd:jenkins -n user
 ```
 oc create -f https://raw.githubusercontent.com/adithaha/workshop-cicd/master/sample-php-website/pipeline-sample-php-website.yaml
 ```
-6. Configure jenkinsfile
-```
-oc edit bc/pipeline-sample-php-website
-```
-Replace jenkinsfile below:
-```
-        node() {
-        stage 'build'
-        openshiftBuild(buildConfig: 'myphp', showBuildLogs: 'true')
-        }
-```
-with this:
-```
-        node('') {
-        stage 'Build'
-        openshiftBuild(namespace: 'userx-dev', buildConfig: 'sample-php-website', showBuildLogs: 'true')
-        stage 'Deploy to Development'
-        openshiftDeploy(namespace: 'userx-dev', deploymentConfig: 'sample-php-website')
-        openshiftScale(namespace: 'userx-dev', deploymentConfig: 'sample-php-website',replicaCount: '1')
-        stage 'Promote to Testing'
-        input 'Promote to Testing?'
-        openshiftTag(namespace: 'userx-dev', sourceStream: 'sample-php-website',  sourceTag: 'latest', destinationStream: 'sample-php-website', destinationTag: 'promoteToQA')
-        openshiftDeploy(namespace: 'userx-test', deploymentConfig: 'sample-php-website', )
-        openshiftScale(namespace: 'userx-test', deploymentConfig: 'sample-php-website',replicaCount: '1')
-        stage 'Promote to Production'
-        input 'Promote to Production?'
-        openshiftTag(namespace: 'userx-dev', sourceStream: 'sample-php-website',  sourceTag: 'promoteToQA', destinationStream: 'sample-php-website', destinationTag: 'promoteToProd')
-        openshiftDeploy(namespace: 'userx-prod', deploymentConfig: 'sample-php-website', )
-        openshiftScale(namespace: 'userx-prod', deploymentConfig: 'sample-php-website',replicaCount: '1')
-        }
-```
-7. Jenkins will take some time before it ready to process pipeline
+6. Jenkins will take some time before it ready to process pipeline
 ```
 oc get pod | grep jenkins
 ```
@@ -188,12 +157,12 @@ oc logs -f <pod-name> --tail=100
 ```
 Wait until message below before continue to next section
 ```
-INFO: Created job userx-cicd-pipeline-sample-php-website from BuildConfig NamespaceName{userx-cicd:pipeline-sample-php-website} with revision: xxxxxxxd
+INFO: Jenkins is fully up and running
 ```
 
-### Walkthrough the configurations via web console
+### Configure jenkinsfile via web console
 
-Now we have all environment and CI/CD pipeline set. To gain more understanding, we will take a look the configurations via web console
+Now we have all environment and Jenkins set. Now we will check the environments and configure jenkinsfile pipeline configurations via web console
 
 1. Open and login into OpenShift web console via browser
 ```
@@ -203,9 +172,57 @@ https://master.jakarta-e3ab.open.redhat.com
 3. Go to TEST environment (userx-test), check if application is up and running (blue circle)
 4. Go to PROD environment (userx-prod), check if application is up and running (blue circle)
 5. Go to CI/CD environment (userx-cicd), check if jenkins is up and running (blue circle)
-6. Check if pipeline already set
+6. Configure pipeline
 ```
-Build - Pipelines - jenkinsfile (pipeline-sample-php-website)
+Build - Pipelines - pipeline-sample-php-website - Actions - Edit
+```
+Replace all its content to below:
+```
+def templateName = 'sample-php-website'
+
+node {
+    stage('Build and Deploy to DEV') {
+        openshift.withCluster() {
+            openshift.withProject("userx-dev") {
+                echo "Using project: ${openshift.project()}"
+	            openshift.selector('bc', templateName).startBuild("--wait=true")
+            }
+        }
+    }
+    stage('Deploy to DEV') {
+        openshift.withCluster() {
+            openshift.withProject("userx-dev") {
+                openshift.selector('dc', templateName).rollout()
+            }
+        }
+    }
+    stage('Promote to TEST') {
+        input message: "Promote to TEST ?"
+        openshift.withCluster() {
+            openshift.withProject("userx-dev") {
+                echo "Using project: ${openshift.project()}"
+	            openshift.tag("${templateName}:latest", "${templateName}:promoteToQA") 
+            }
+            openshift.withProject("userx-test") {
+                echo "Using project: ${openshift.project()}"
+	            openshift.selector('dc', templateName).rollout()
+            }
+        }
+    }
+    stage('Promote to PROD') {
+        input message: "Promote to PROD ?"
+        openshift.withCluster() {
+            openshift.withProject("userx-dev") {
+                echo "Using project: ${openshift.project()}"
+	            openshift.tag("${templateName}:promoteToQA", "${templateName}:promoteToProd") 
+            }
+            openshift.withProject("userx-prod") {
+                echo "Using project: ${openshift.project()}"
+	            def dc = openshift.selector('dc', templateName).rollout()
+            }
+        }
+    }
+}
 ```
 
 ### Try out the pipeline
