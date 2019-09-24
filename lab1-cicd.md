@@ -95,9 +95,9 @@ PROD: http://sample-php-website-userx-prod.apps.rhpds311.openshift.opentlc.com
 Now we will create CI/CD pipeline with step below:
 ```
 1. Build - build application image and push it to DEV env
-2. Deploy to DEV - deploy image from #1 to DEV env
-3. Deploy to TEST - tag image from #1 to promoteToQA, and deploy to TEST env
-4. Deploy to PROD (approval) - asking user approval, if approved, tag image from #3 to promoteToProd, and deploy to PROD env
+2. Deploy to Development - deploy image from #1 to DEV env
+3. Promote to Testing (approval) - tag image from #1 to promoteToQA, and deploy to TEST env
+4. Deploy to Production (approval) - asking user approval, if approved, tag image from #3 to promoteToProd, and deploy to PROD env
 ```
 
 1. Create CI/CD project
@@ -129,27 +129,176 @@ With this:
             memory: 1Gi      
 ```
 
-3. Add edit role from userx-cicd:jenkins to userx-dev, userx-test and userx-prod
+4. Add edit role from userx-cicd:jenkins to userx-dev, userx-test and userx-prod
 ```
 oc policy add-role-to-user edit system:serviceaccount:userx-cicd:jenkins -n userx-dev  
 oc policy add-role-to-user edit system:serviceaccount:userx-cicd:jenkins -n userx-test    
 oc policy add-role-to-user edit system:serviceaccount:userx-cicd:jenkins -n userx-prod  
 ```
-4. import pipeline yaml from https://raw.githubusercontent.com/adithaha/workshop-cicd/master/sample-php-website/pipeline-sample-php-website.yaml
+5. Import pipeline template from https://raw.githubusercontent.com/adithaha/workshop-cicd/master/sample-php-website/pipeline-sample-php-website.yaml
 ```
 oc create -f https://raw.githubusercontent.com/adithaha/workshop-cicd/master/sample-php-website/pipeline-sample-php-website.yaml
 ```
+6. Configure jenkinsfile
+```
+oc edit bc/pipeline-sample-php-website
+```
+Replace jenkinsfile below:
+```
+        node() {
+        stage 'build'
+        openshiftBuild(buildConfig: 'myphp', showBuildLogs: 'true')
+        stage 'deploy'
+        openshiftDeploy(deploymentConfig: 'myphp')
+        openshiftScale(deploymentConfig: 'myphp',replicaCount: '2')
+        }
+```
+with this:
+```
+        node() {
+        stage 'build'
+        openshiftBuild(buildConfig: 'myphp', showBuildLogs: 'true')
+        stage 'deploy'
+        openshiftDeploy(deploymentConfig: 'myphp')
+        openshiftScale(deploymentConfig: 'myphp',replicaCount: '2')
+        }
+```
 
-(import pipeline-sample-php-website.yaml) - https://github.com/adithaha/workshop-cicd/raw/master/sample-php-website/pipeline-sample-php-website.yaml  
-(modify jenkinsfile) - https://github.com/adithaha/workshop-cicd/raw/master/sample-php-website/jenkinsfile  
+### Walkthrough Web Console
 
-### webhook
+Now we have all environment and CI/CD pipeline set. To gain more understanding, we will take a look the configurations via web console
 
-(create secret - webhook secret)  
-(edit pipeline yaml)  
-      triggers:  
-        - generic:  
-            secret: pipeline  
-          type: Generic  
-          
-          
+1. Open and login into OpenShift web console via browser
+```
+https://master.jakarta-e3ab.open.redhat.com
+```
+2. Go to DEV environment (userx-dev), check if application is up and running (blue circle)
+3. Go to TEST environment (userx-test), check if application is up and running (blue circle)
+4. Go to PROD environment (userx-prod), check if application is up and running (blue circle)
+5. Go to CI/CD environment (userx-cicd), check if jenkins is up and running (blue circle)
+6. Check if pipeline already set
+```
+Build - Pipelines - jenkinsfile (pipeline-sample-php-website)
+```
+
+### Check the pipeline
+
+1. Go to pipeline
+```
+Build - Pipelines - pipeline-sample-php-website
+```
+2. Start Pipeline
+3. You should see some progress up to Promote to Testing
+```
+Build - Deploy to Development - Promote to Testing (Input Required)
+```
+4. Approve Promote to Testing
+```
+Click Input Required, you will be redirected to jenkins page
+Login with OpenShift, fill openshift username/password
+Give authorize access, Allow selected permissions
+Promote to Testing? Proceed
+```
+5. Go back to openshift web, you will see Promote to Testing is progressing
+```
+Build - Deploy to Development - Promote to Testing - Promote to Production (Input Required)
+```
+6. Approve Promote to Production, procedure is similar to #4
+7. Now pipeline process is completed
+
+### Scenario 1: sample application is changed in DEV, but not approved in TEST
+
+Here we will try to start pipeline with scenario above. Wait for instructor to change the source code.
+
+Expected result:
+1. DEV is updated
+2. TEST is not updated
+3. PROD is not updated
+
+After instructor give the instruction, follow procedure below.
+
+1. Go to pipeline
+```
+Build - Pipelines - pipeline-sample-php-website
+```
+2. Start Pipeline
+3. You should see some progress up to Promote to Testing
+```
+Build - Deploy to Development - Promote to Testing (Input Required)
+```
+4. Reject Promote to Testing
+```
+Click Input Required, you will be redirected to jenkins page
+Promote to Testing? Abort
+```
+5. Go back to openshift web, you will see Promote to Testing is aborted, pipeline process is finished
+6. Go to each application URL in DEV/TEST/PROD, check if expected result is correct
+
+### Scenario 2: sample application is changed in DEV, promoted to TEST, rejected to PROD
+
+Here we will try to start pipeline with scenario above. Wait for instructor to change the source code.
+
+Expected result:
+1. DEV is updated
+2. TEST is updated
+3. PROD is not updated
+
+After instructor give the instruction, follow procedure below.
+
+1. Go to pipeline
+```
+Build - Pipelines - pipeline-sample-php-website
+```
+2. Start Pipeline
+3. You should see some progress up to Promote to Testing
+```
+Build - Deploy to Development - Promote to Testing (Input Required)
+```
+4. Approve Promote to Testing
+```
+Click Input Required, you will be redirected to jenkins page
+Promote to Testing? Proceed
+```
+5. Go back to openshift web, you will see Promote to Testing is progressing
+```
+Build - Deploy to Development - Promote to Testing - Promote to Production (Input Required)
+```
+6. Reject Promote to Production
+7. Go back to openshift web, you will see Promote to Production is aborted, pipeline process is finished
+8. Go to each application URL in DEV/TEST/PROD, check if expected result is correct
+
+### Scenario 3: sample application is changed in DEV, promoted to TEST, and promoted to PROD
+
+Here we will try to start pipeline with scenario above. Wait for instructor to change the source code.
+
+Expected result:
+1. DEV is updated
+2. TEST is updated
+3. PROD is updated
+
+After instructor give the instruction, follow procedure below.
+
+1. Go to pipeline
+```
+Build - Pipelines - pipeline-sample-php-website
+```
+2. Start Pipeline
+3. You should see some progress up to Promote to Testing
+```
+Build - Deploy to Development - Promote to Testing (Input Required)
+```
+4. Approve Promote to Testing
+```
+Click Input Required, you will be redirected to jenkins page
+Promote to Testing? Proceed
+```
+5. Go back to openshift web, you will see Promote to Testing is progressing
+```
+Build - Deploy to Development - Promote to Testing - Promote to Production (Input Required)
+```
+6. Approve Promote to Production
+7. Go back to openshift web, you will see Promote to Production is progressing, wait until pipeline process is finished
+8. Go to each application URL in DEV/TEST/PROD, check if expected result is correct
+
+
+
