@@ -153,16 +153,26 @@ Replace jenkinsfile below:
 ```
 with this:
 ```
-        node() {
-        stage 'build'
-        openshiftBuild(buildConfig: 'myphp', showBuildLogs: 'true')
-        stage 'deploy'
-        openshiftDeploy(deploymentConfig: 'myphp')
-        openshiftScale(deploymentConfig: 'myphp',replicaCount: '2')
+        node('') {
+        stage 'Build'
+        openshiftBuild(namespace: 'userx-dev', buildConfig: 'sample-php-website', showBuildLogs: 'true')
+        stage 'Deploy to Development'
+        openshiftDeploy(namespace: 'userx-dev', deploymentConfig: 'sample-php-website')
+        openshiftScale(namespace: 'userx-dev', deploymentConfig: 'sample-php-website',replicaCount: '1')
+        stage 'Promote to Testing'
+        input 'Promote to Testing?'
+        openshiftTag(namespace: 'userx-dev', sourceStream: 'sample-php-website',  sourceTag: 'latest', destinationStream: 'sample-php-website', destinationTag: 'promoteToQA')
+        openshiftDeploy(namespace: 'userx-test', deploymentConfig: 'sample-php-website', )
+        openshiftScale(namespace: 'userx-test', deploymentConfig: 'sample-php-website',replicaCount: '1')
+        stage 'Promote to Production'
+        input 'Promote to Production?'
+        openshiftTag(namespace: 'userx-dev', sourceStream: 'sample-php-website',  sourceTag: 'promoteToQA', destinationStream: 'sample-php-website', destinationTag: 'promoteToProd')
+        openshiftDeploy(namespace: 'userx-prod', deploymentConfig: 'sample-php-website', )
+        openshiftScale(namespace: 'userx-prod', deploymentConfig: 'sample-php-website',replicaCount: '1')
         }
 ```
 
-### Walkthrough Web Console
+### Walkthrough the configurations via web console
 
 Now we have all environment and CI/CD pipeline set. To gain more understanding, we will take a look the configurations via web console
 
