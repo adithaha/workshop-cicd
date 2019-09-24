@@ -15,11 +15,20 @@ oc new-project userx-dev
 ```
 oc new-app php:7.1~https://github.com/adithaha/workshop-cicd.git --context-dir=/sample-php-website --name=sample-php-website
 ```
-4. Create route to the application with port mapping 8080
+4. Application is being build now, check build log
+```
+oc get pod | grep build
+```
+Note pod name, tail build log
+```
+oc logs -f <pod-name> --tail=100
+```
+Wait until message "Push successful" before continue  
+5. Create route to the application with port mapping 8080
 ```
 oc expose service sample-php-website --name=sample-php-website --port=8080
 ```
-5. Check if application is deployed correctly in dev environment
+6. Check if application is deployed correctly in dev environment
 ```
 oc get route
 ```
