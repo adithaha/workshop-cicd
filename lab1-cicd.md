@@ -23,7 +23,7 @@ Note pod name, tail build log
 ```
 oc logs -f <pod-name> --tail=100
 ```
-Wait until message "Push successful" before continue  
+Wait until message "Push successful" before continue   
 5. Create route to the application with port mapping 8080
 ```
 oc expose service sample-php-website --name=sample-php-website --port=8080
