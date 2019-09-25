@@ -8,7 +8,7 @@
 function config($key = '')
 {
     $config = [
-        'name' => 'Simple PHP Website - 8',
+        'name' => 'Simple PHP Website - 9',
         'nav_menu' => [
             '' => 'Home',
             'about-us' => 'About Us',
