@@ -37,10 +37,10 @@ With this:
         resources:
           limits:
             cpu: '2'
-            memory: 2Gi
+            memory: 1536Mi
           requests:
             cpu: '1'
-            memory: 1Gi      
+            memory: 1024Mi      
 ```
 
 4. Add edit role from userx-cicd:jenkins to userx-dev, userx-test and userx-prod
