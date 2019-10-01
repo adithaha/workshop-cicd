@@ -18,7 +18,7 @@ function config($key = '')
         'template_path' => 'template',
         'content_path' => 'content',
         'pretty_uri' => true,
-        'version' => 'v2.0',
+        'version' => '',
     ];
 
     return isset($config[$key]) ? $config[$key] : null;
