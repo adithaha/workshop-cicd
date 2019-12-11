@@ -11,7 +11,7 @@ After instructor give the instruction, follow procedure below.
 
 1. Go to pipeline
 ```
-Build - Pipelines - pipeline-sample-php-website
+Build - Pipelines - <userx>-parksmap-pipeline
 ```
 2. Start Pipeline
 3. You should see some progress up to Promote to Testing
@@ -39,7 +39,7 @@ After instructor give the instruction, follow procedure below.
 
 1. Go to pipeline
 ```
-Build - Pipelines - pipeline-sample-php-website
+Build - Pipelines - <userx>-parksmap-pipeline
 ```
 2. Start Pipeline
 3. You should see some progress up to Promote to Testing
@@ -72,7 +72,7 @@ After instructor give the instruction, follow procedure below.
 
 1. Go to pipeline
 ```
-Build - Pipelines - pipeline-sample-php-website
+Build - Pipelines - <userx>-parksmap-pipeline
 ```
 2. Start Pipeline
 3. You should see some progress up to Promote to Testing
