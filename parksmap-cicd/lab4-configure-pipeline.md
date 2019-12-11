@@ -44,7 +44,29 @@ With this:
             cpu: '1'
             memory: 1024Mi      
 ```
-
+```
+oc adm policy add-role-to-user admin user1 -n cicd
+oc adm policy add-role-to-user admin user2 -n cicd
+oc adm policy add-role-to-user admin user3 -n cicd
+oc adm policy add-role-to-user admin user4 -n cicd
+oc adm policy add-role-to-user admin user5 -n cicd
+oc adm policy add-role-to-user admin user6 -n cicd
+oc adm policy add-role-to-user admin user7 -n cicd
+oc adm policy add-role-to-user admin user8 -n cicd
+oc adm policy add-role-to-user admin user9 -n cicd
+oc adm policy add-role-to-user admin user10 -n cicd
+oc adm policy add-role-to-user admin user11 -n cicd
+oc adm policy add-role-to-user admin user12 -n cicd
+oc adm policy add-role-to-user admin user13 -n cicd
+oc adm policy add-role-to-user admin user14 -n cicd
+oc adm policy add-role-to-user admin user15 -n cicd
+oc adm policy add-role-to-user admin user16 -n cicd
+oc adm policy add-role-to-user admin user17 -n cicd
+oc adm policy add-role-to-user admin user18 -n cicd
+oc adm policy add-role-to-user admin user19 -n cicd
+oc adm policy add-role-to-user admin user20 -n cicd
+oc adm policy add-role-to-user admin user99 -n cicd
+```
 ### Prepare Pipeline ###
 
 1. Add edit role from userx-cicd:jenkins to userx-dev, userx-test and userx-prod
