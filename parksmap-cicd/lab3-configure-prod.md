@@ -3,28 +3,40 @@ Note: For all procedure below, replace all userx to your user account, eg. user4
 
 ### Configure deployment on prod environment
 
-1. Tag previous image from development to promoteToProd
+1. Tag previous image from promoteToQA to promoteToProd
 ```
-oc tag userx-dev/sample-php-website:promoteToQA userx-dev/sample-php-website:promoteToProd   
+oc tag <userx>-dev/nationalparks:promoteToQA <userx>-dev/nationalparks:promoteToProd
+oc tag <userx>-dev/parksmap:promoteToQA <userx>-dev/parksmap:promoteToProd  
 ```
-2. Create prod project
+2. Create test project
 ```
-oc new-project userx-prod  
+oc new-project <userx>-prod  
 ```
 3. Add image-puller role from userx-prod to userx-dev, so prod env can pull image from dev env
 ```
-oc policy add-role-to-group system:image-puller system:serviceaccounts:userx-prod -n userx-dev  
+oc policy add-role-to-group system:image-puller system:serviceaccounts:<userx>-prod -n <userx>-dev  
 ```
-4. Deploy image with promoteToProd tag to prod environment
+4. Add view service account to project <userx>-prod
 ```
-oc new-app --image-stream=userx-dev/sample-php-website:promoteToProd --name=sample-php-website
+oc policy add-role-to-user view system:serviceaccount:<userx>-prod:default
 ```
-5. Create route to the application with port mapping 8080
+5. Deploy postgre
 ```
-oc expose service sample-php-website --name=sample-php-website --port=8080
+oc new-app postgresql-ephemeral -e POSTGRESQL_USER=postgres -e POSTGRESQL_PASSWORD=postgres -e POSTGRESQL_DATABASE=postgres
 ```
-6. Check if application is deployed correctly in prod environment
+
+6. Deploy image with promoteToProd tag to test environment
+```
+oc new-app --image-stream=<userx>-dev/nationalparks:promoteToProd --name=nationalparks
+oc new-app --image-stream=<userx>-dev/parksmap:promoteToProd --name=parksmap
+```
+7. Create route to the application with port mapping 8080
+```
+oc expose service nationalparks --name=nationalparks --port=8080
+oc expose service parksmap --name=parksmap --port=8080
+```
+8. Check if application is deployed correctly in prod environment
 ```
 oc get route
 ```
-Note the application host url, open it in a browser. You should able to see sample PHP application web page (prod)
+Note the backend and web  url, open it in a browser. You should able to see response from both
