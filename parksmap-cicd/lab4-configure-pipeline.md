@@ -1,18 +1,20 @@
 ### Configure pipeline 
 
-Now we have all deployment set in dev, test and prod. Note down the URL, for example:
+Now we have all deployment set in dev, test and prod. Note down the web URL, for example:
 ```
-DEV: http://sample-php-website-userx-dev.apps.rhpds311.openshift.opentlc.com
-TEST: http://sample-php-website-userx-test.apps.rhpds311.openshift.opentlc.com
-PROD: http://sample-php-website-userx-prod.apps.rhpds311.openshift.opentlc.com
+DEV: http://parksmap-userx-dev.apps.rhpds3x.openshift.opentlc.com
+TEST: http://parksmap-userx-dev.apps.rhpds3x.openshift.opentlc.com
+PROD: http://parksmap-userx-dev.apps.rhpds3x.openshift.opentlc.com
 ```
-Now we will create CI/CD pipeline with step below:
+Now we will create CI/CD pipeline for web component with step below:
 ```
 1. Build - build application image and push it to DEV env
 2. Deploy to Development - deploy image from #1 to DEV env
 3. Promote to Testing (approval) - asking user approval, if approved, tag image from #1 to promoteToQA, and deploy to TEST env
 4. Deploy to Production (approval) - asking user approval, if approved, tag image from #3 to promoteToProd, and deploy to PROD env
 ```
+
+### Deploy CI/CD Engine - skip if instructor has created this for you ###
 
 1. Create CI/CD project
 ```
@@ -43,29 +45,18 @@ With this:
             memory: 1024Mi      
 ```
 
-4. Add edit role from userx-cicd:jenkins to userx-dev, userx-test and userx-prod
+### Prepare Pipeline ###
+
+1. Add edit role from userx-cicd:jenkins to userx-dev, userx-test and userx-prod
 ```
 oc policy add-role-to-user edit system:serviceaccount:userx-cicd:jenkins -n userx-dev  
 oc policy add-role-to-user edit system:serviceaccount:userx-cicd:jenkins -n userx-test    
 oc policy add-role-to-user edit system:serviceaccount:userx-cicd:jenkins -n userx-prod  
 ```
-5. Import pipeline template from https://raw.githubusercontent.com/adithaha/workshop-cicd/master/sample-php-website/pipeline-sample-php-website.yaml
+2. Import pipeline template from https://raw.githubusercontent.com/adithaha/workshop-cicd/master/sample-php-website/pipeline-sample-php-website.yaml
 ```
 oc create -f https://raw.githubusercontent.com/adithaha/workshop-cicd/master/sample-php-website/pipeline-sample-php-website.yaml
 ```
-6. Jenkins will take some time before it ready to process pipeline
-```
-oc get pod | grep jenkins
-```
-There are multiple pod, pick one with name without "-deploy" and status running, note pod name , tail its log
-```
-oc logs -f <pod-name> --tail=100
-```
-Wait until message below before continue to next section
-```
-INFO: Jenkins is fully up and running
-```
-
 ### Configure jenkinsfile via web console
 
 Now we have all environment and Jenkins set. Now we will check the environments and configure jenkinsfile pipeline configurations via web console
@@ -78,13 +69,38 @@ https://master.jakarta-e3ab.open.redhat.com
 3. Go to TEST environment (userx-test), check if application is up and running (blue circle)
 4. Go to PROD environment (userx-prod), check if application is up and running (blue circle)
 5. Go to CI/CD environment (userx-cicd), check if jenkins is up and running (blue circle)
-6. Configure pipeline
+6. Create pipeline in CI/CD environment
 ```
-Build - Pipelines - pipeline-sample-php-website - Actions - Edit
+Add to Project - Import YAML/JSON - paste below - change name to your specific user
+```
+```
+apiVersion: v1
+kind: BuildConfig
+metadata:
+  name: <userx>-parksmap-pipeline
+  labels:
+    name: <userx>-parksmap-pipeline
+  annotations:
+    pipeline.alpha.openshift.io/uses: '[{"name": "<userx>-parksmap-pipeline", "namespace": "", "kind": "DeploymentConfig"}]'
+spec:
+  runPolicy: Serial
+  source:
+    type: None
+  strategy:
+    type: JenkinsPipeline
+    jenkinsPipelineStrategy:
+      jenkinsfile: "node() {\nstage 'build'\nopenshiftBuild(buildConfig: 'myphp', showBuildLogs: 'true')\n}"
+  output:
+  resources:
+  postCommit:
+```
+7. Configure pipeline
+```
+Build - Pipelines - <userx>-parksmap-pipeline - Actions - Edit
 ```
 Replace all its content to below:
 ```
-def templateName = 'sample-php-website'
+def templateName = 'parksmap'
 
 node {
     stage('Build and Deploy to DEV') {
@@ -135,7 +151,7 @@ node {
 
 1. Go to pipeline
 ```
-Build - Pipelines - pipeline-sample-php-website
+Build - Pipelines - <userx>-parksmap-pipeline
 ```
 2. Start Pipeline
 3. You should see some progress up to Promote to Testing
