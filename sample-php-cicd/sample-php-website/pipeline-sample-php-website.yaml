@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: BuildConfig
+metadata:
+  name: pipeline-sample-php-website
+  labels:
+    name: pipeline-sample-php-website
+  annotations:
+    pipeline.alpha.openshift.io/uses: '[{"name": "sample-php-website", "namespace": "", "kind": "DeploymentConfig"}]'
+spec:
+  runPolicy: Serial
+  source:
+    type: None
+  strategy:
+    type: JenkinsPipeline
+    jenkinsPipelineStrategy:
+      jenkinsfile: "node() {\nstage 'build'\nopenshiftBuild(buildConfig: 'myphp', showBuildLogs: 'true')\n}"
+  output:
+  resources:
+  postCommit:
