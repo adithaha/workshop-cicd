@@ -69,7 +69,11 @@ oc adm policy add-role-to-user admin user99 -n cicd
 ```
 ### Prepare Pipeline ###
 
-1. Add edit role from userx-cicd:jenkins to userx-dev, userx-test and userx-prod
+1. Go to  CI/CD project
+```
+oc project cicd  
+```
+2. Add edit role from userx-cicd:jenkins to userx-dev, userx-test and userx-prod
 ```
 oc policy add-role-to-user edit system:serviceaccount:cicd:jenkins -n userx-dev  
 oc policy add-role-to-user edit system:serviceaccount:cicd:jenkins -n userx-test    
