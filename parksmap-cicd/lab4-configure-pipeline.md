@@ -71,13 +71,9 @@ oc adm policy add-role-to-user admin user99 -n cicd
 
 1. Add edit role from userx-cicd:jenkins to userx-dev, userx-test and userx-prod
 ```
-oc policy add-role-to-user edit system:serviceaccount:userx-cicd:jenkins -n userx-dev  
-oc policy add-role-to-user edit system:serviceaccount:userx-cicd:jenkins -n userx-test    
-oc policy add-role-to-user edit system:serviceaccount:userx-cicd:jenkins -n userx-prod  
-```
-2. Import pipeline template from https://raw.githubusercontent.com/adithaha/workshop-cicd/master/sample-php-website/pipeline-sample-php-website.yaml
-```
-oc create -f https://raw.githubusercontent.com/adithaha/workshop-cicd/master/sample-php-website/pipeline-sample-php-website.yaml
+oc policy add-role-to-user edit system:serviceaccount:cicd:jenkins -n userx-dev  
+oc policy add-role-to-user edit system:serviceaccount:cicd:jenkins -n userx-test    
+oc policy add-role-to-user edit system:serviceaccount:cicd:jenkins -n userx-prod  
 ```
 ### Configure jenkinsfile via web console
 
@@ -85,7 +81,7 @@ Now we have all environment and Jenkins set. Now we will check the environments 
 
 1. Open and login into OpenShift web console via browser
 ```
-https://master.jakarta-e3ab.open.redhat.com
+https://<openshift>
 ```
 2. Go to DEV environment (userx-dev), check if application is up and running (blue circle)
 3. Go to TEST environment (userx-test), check if application is up and running (blue circle)
