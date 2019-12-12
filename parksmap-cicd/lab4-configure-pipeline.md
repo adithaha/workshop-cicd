@@ -14,7 +14,7 @@ Now we will create CI/CD pipeline for web component with step below:
 4. Deploy to Production (approval) - asking user approval, if approved, tag image from #3 to promoteToProd, and deploy to PROD env
 ```
 
-### Deploy CI/CD Engine - skip if instructor has created this for you ###
+### Deploy CI/CD Engine - SKIP THIS!! CONTINUE TO PREPARE PIPELINE ###
 
 1. Create CI/CD project
 ```
