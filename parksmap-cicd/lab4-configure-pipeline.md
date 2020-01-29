@@ -68,51 +68,51 @@ Build - Pipelines - <userx>-parksmap-pipeline - Actions - Edit
 ```
 Replace all its content to below:
 ```
-def templateName = 'parksmap'
+        def templateName = 'parksmap'
 
-node {
-    stage('Build and Deploy to DEV') {
-        openshift.withCluster() {
-            openshift.withProject("userx-dev") {
-                echo "Using project: ${openshift.project()}"
-	            openshift.selector('bc', templateName).startBuild("--wait=true")
+        node {
+            stage('Build and Deploy to DEV') {
+                openshift.withCluster() {
+                    openshift.withProject("userx-dev") {
+                        echo "Using project: ${openshift.project()}"
+                          openshift.selector('bc', templateName).startBuild("--wait=true")
+                    }
+                }        
+            }
+            stage('Deploy to DEV') {
+                openshift.withCluster() {
+                    openshift.withProject("userx-dev") {
+                        openshift.selector('dc', templateName).rollout()
+                    }
+                }
+            }
+            stage('Promote to TEST') {
+                input message: "Promote to TEST ?"
+                openshift.withCluster() {
+                    openshift.withProject("userx-dev") {
+                        echo "Using project: ${openshift.project()}"
+                          openshift.tag("${templateName}:latest", "${templateName}:promoteToQA") 
+                    }
+                    openshift.withProject("userx-test") {
+                        echo "Using project: ${openshift.project()}"
+                          openshift.selector('dc', templateName).rollout()
+                    }
+                }
+            }
+            stage('Promote to PROD') {
+                input message: "Promote to PROD ?"
+                openshift.withCluster() {
+                    openshift.withProject("userx-dev") {
+                      echo "Using project: ${openshift.project()}"
+                        openshift.tag("${templateName}:promoteToQA", "${templateName}:promoteToProd") 
+                    }
+                    openshift.withProject("userx-prod") {
+                      echo "Using project: ${openshift.project()}"
+                        def dc = openshift.selector('dc', templateName).rollout()
+                      }
+                }
             }
         }
-    }
-    stage('Deploy to DEV') {
-        openshift.withCluster() {
-            openshift.withProject("userx-dev") {
-                openshift.selector('dc', templateName).rollout()
-            }
-        }
-    }
-    stage('Promote to TEST') {
-        input message: "Promote to TEST ?"
-        openshift.withCluster() {
-            openshift.withProject("userx-dev") {
-                echo "Using project: ${openshift.project()}"
-	            openshift.tag("${templateName}:latest", "${templateName}:promoteToQA") 
-            }
-            openshift.withProject("userx-test") {
-                echo "Using project: ${openshift.project()}"
-	            openshift.selector('dc', templateName).rollout()
-            }
-        }
-    }
-    stage('Promote to PROD') {
-        input message: "Promote to PROD ?"
-        openshift.withCluster() {
-            openshift.withProject("userx-dev") {
-                echo "Using project: ${openshift.project()}"
-	            openshift.tag("${templateName}:promoteToQA", "${templateName}:promoteToProd") 
-            }
-            openshift.withProject("userx-prod") {
-                echo "Using project: ${openshift.project()}"
-	            def dc = openshift.selector('dc', templateName).rollout()
-            }
-        }
-    }
-}
 ```
 
 ### Try out the pipeline
