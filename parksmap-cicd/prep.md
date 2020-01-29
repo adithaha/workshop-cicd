@@ -2,7 +2,7 @@
 
 1. Create CI/CD project
 ```
-oc new-project userx-cicd  
+oc new-project cicd  
 ```
 2. Deploy Jenkins application
 ```
