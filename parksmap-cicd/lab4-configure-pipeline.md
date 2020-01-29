@@ -39,7 +39,7 @@ https://<openshift>
 5. Go to CI/CD environment (userx-cicd), check if jenkins is up and running (blue circle)
 6. Create pipeline in CI/CD environment
 ```
-Add to Project - Import YAML/JSON - paste below - change name to your specific user
+Add to Project - Import YAML - paste yaml script below - change name to your specific user
 ```
 ```
 apiVersion: v1
