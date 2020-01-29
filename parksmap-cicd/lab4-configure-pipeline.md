@@ -39,7 +39,7 @@ https://<openshift>
 5. Go to CI/CD environment (userx-cicd), check if jenkins is up and running (blue circle)
 6. Create pipeline in CI/CD environment
 ```
-Add to Project - Import YAML - paste yaml script below - change name to your specific user
+Add to Project - Import YAML - paste pipeline template script below - change name to your specific user
 ```
 ```
 apiVersion: v1
@@ -64,16 +64,16 @@ spec:
 ```
 7. Configure pipeline
 ```
-Build - Pipelines - <userx>-parksmap-pipeline - Actions - Edit
+Builds - Build Configs - <userx>-parksmap-pipeline - Edit Build Config
 ```
-Replace all its content to below:
+Replace jenkinsfile script under 'jenkinsfile: |-' tag with below. Don't forget to put correct <userx>:
 ```
         def templateName = 'parksmap'
 
         node {
             stage('Build and Deploy to DEV') {
                 openshift.withCluster() {
-                    openshift.withProject("userx-dev") {
+                    openshift.withProject("<userx>-dev") {
                         echo "Using project: ${openshift.project()}"
                           openshift.selector('bc', templateName).startBuild("--wait=true")
                     }
@@ -81,7 +81,7 @@ Replace all its content to below:
             }
             stage('Deploy to DEV') {
                 openshift.withCluster() {
-                    openshift.withProject("userx-dev") {
+                    openshift.withProject("<userx>-dev") {
                         openshift.selector('dc', templateName).rollout()
                     }
                 }
@@ -89,11 +89,11 @@ Replace all its content to below:
             stage('Promote to TEST') {
                 input message: "Promote to TEST ?"
                 openshift.withCluster() {
-                    openshift.withProject("userx-dev") {
+                    openshift.withProject("<userx>-dev") {
                         echo "Using project: ${openshift.project()}"
                           openshift.tag("${templateName}:latest", "${templateName}:promoteToQA") 
                     }
-                    openshift.withProject("userx-test") {
+                    openshift.withProject("<userx>-test") {
                         echo "Using project: ${openshift.project()}"
                           openshift.selector('dc', templateName).rollout()
                     }
@@ -102,11 +102,11 @@ Replace all its content to below:
             stage('Promote to PROD') {
                 input message: "Promote to PROD ?"
                 openshift.withCluster() {
-                    openshift.withProject("userx-dev") {
+                    openshift.withProject("<userx>-dev") {
                       echo "Using project: ${openshift.project()}"
                         openshift.tag("${templateName}:promoteToQA", "${templateName}:promoteToProd") 
                     }
-                    openshift.withProject("userx-prod") {
+                    openshift.withProject("<userx>-prod") {
                       echo "Using project: ${openshift.project()}"
                         def dc = openshift.selector('dc', templateName).rollout()
                       }
@@ -119,9 +119,9 @@ Replace all its content to below:
 
 1. Go to pipeline
 ```
-Build - Pipelines - <userx>-parksmap-pipeline
+Builds - Build Config - <userx>-parksmap-pipeline
 ```
-2. Start Pipeline
+2. Start Build
 3. You should see some progress up to Promote to Testing
 ```
 Build - Deploy to Development - Promote to Testing (Input Required)
@@ -131,6 +131,7 @@ Build - Deploy to Development - Promote to Testing (Input Required)
 Click Input Required, you will be redirected to jenkins page
 Login with OpenShift, fill openshift username/password
 Give authorize access, Allow selected permissions
+In left panel, select Paused for Input
 Promote to Testing? Proceed
 ```
 5. Go back to openshift web, you will see Promote to Testing is progressing
