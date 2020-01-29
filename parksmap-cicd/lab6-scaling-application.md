@@ -5,11 +5,11 @@ OpenShift has capability to scale your application vertically (increasing resour
 ## Vertical Scaling
 
 Here we will increase resource for parksmap web application via web console
-1. Go to <userx>-prod project
+1. Go to userx-prod project
 ```
-Application - Deployment - parksmap - Action - Edit Resource Limit
+Home - Status - parksmap - Action - Edit Deployment Config
 ```
-2. Increase resource as below, replace resources: {}
+2. Increase resource as below, replace resources: {} in tag template - spec - containers with below:
 ```
           resources:
             limits:
@@ -24,7 +24,7 @@ Application - Deployment - parksmap - Action - Edit Resource Limit
 ## Horizontal Scaling
 
 Here we will increase instance of nationalpark backend application via web console
-1. Go to <userx>-prod project
+1. Go to userx-prod project
 2. Home - Status - parksmap - desired count
 2. Increase instance number from 1 to 2 using + icon, click Save
 3. New identical instance will be deployed, with same route, and automatically load balanced. It will be seamless from client perspective
