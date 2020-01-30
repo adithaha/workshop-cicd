@@ -37,11 +37,14 @@ http://nationalparks-anugraha-msa.apps.rhpds3x.openshift.opentlc.com/ws/data/all
 oc create -f https://raw.githubusercontent.com/adithaha/parksmap-web/master/ose3/application-template.json
 oc new-app parksmap-web
 ```
+It may take 5-10 minutes to complete build the application, you can monitor in openshift web console, see if there sign '1 of 1 pods' on the right side of nationalparks application.
 7. Check if web application is deployed correctly in dev environment
 ```
 oc get route
 ```
-Note the parksmap-web application host url, open it in a browser. You should be able to see map with park geo location
+Note the parksmap-web application host url, open it in a browser. 
+
+You should be able to see map with park geo location
 ex.
 ```
 http://parksmap-anugraha-msa.apps.rhpds3x.openshift.opentlc.com/
