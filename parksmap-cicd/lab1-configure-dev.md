@@ -9,7 +9,7 @@ oc login -u userx https://<openshift-cli-console>
 ```
 2. Create development project
 ```
-oc new-project <userx-dev>
+oc new-project <userx>-dev
 ```
 ### Deploy Postgre DB in development environment
 
@@ -21,7 +21,7 @@ oc new-app postgresql-ephemeral -e POSTGRESQL_USER=postgres -e POSTGRESQL_PASSWO
 
 1. Deploy backend application deployment using java image and source code from git
 ```
-oc policy add-role-to-user view system:serviceaccount:<userx-dev>:default
+oc policy add-role-to-user view system:serviceaccount:<userx>-dev:default
 oc create -f https://raw.githubusercontent.com/adithaha/nationalparks/master/ose3/application-template.json
 oc new-app nationalparks-postgre
 ```
