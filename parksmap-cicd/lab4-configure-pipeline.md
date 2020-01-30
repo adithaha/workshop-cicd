@@ -36,7 +36,7 @@ https://<openshift-web-console>
 2. Go to DEV environment (userx-dev), check if application is up and running (blue circle)
 3. Go to TEST environment (userx-test), check if application is up and running (blue circle)
 4. Go to PROD environment (userx-prod), check if application is up and running (blue circle)
-5. Go to CI/CD environment (userx-cicd), check if jenkins is up and running (blue circle)
+5. Go to CI/CD environment (cicd), check if jenkins is up and running (blue circle)
 6. On CICD project, create default pipeline
 ```
 cicd project - (+) icon on top right - paste pipeline template script below - change name to your specific user
