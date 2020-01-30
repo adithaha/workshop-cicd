@@ -3,9 +3,9 @@ Note: For all procedure below, replace all userx to your user account, eg. user4
 
 ### Configure deployment on development environment
 
-1. Login into openshift (you need openshift web url correctly)
+1. Login into openshift (you need openshift web console url correctly)
 ```
-oc login -u userx https://master.jakarta-5885.open.redhat.com
+oc login -u userx https://<openshift-web-console>
 ```
 2. Create development project
 ```
