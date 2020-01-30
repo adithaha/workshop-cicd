@@ -11,18 +11,23 @@ oc login -u userx https://<openshift-cli-console>
 ```
 oc new-project <userx-dev>
 ```
-3. Deploy postgre
+### Deploy Postgre DB in development environment
+
+1. Deploy postgre
 ```
 oc new-app postgresql-ephemeral -e POSTGRESQL_USER=postgres -e POSTGRESQL_PASSWORD=postgres -e POSTGRESQL_DATABASE=postgres
 ```
+### Deploy nationalparks backend in development environment
 
-4. Deploy backend application deployment using java image and source code from git
+1. Deploy backend application deployment using java image and source code from git
 ```
 oc policy add-role-to-user view system:serviceaccount:<userx-dev>:default
 oc create -f https://raw.githubusercontent.com/adithaha/nationalparks/master/ose3/application-template.json
 oc new-app nationalparks-postgre
 ```
-5. Check if backend application is deployed correctly in dev environment
+It may take 5-10 minutes to complete build the application, you can monitor in openshift web console, see if there sign '1 of 1 pods' on the right side of nationalparks application.
+
+2. Check if backend application is deployed correctly in dev environment
 ```
 oc get route
 ```
@@ -32,13 +37,17 @@ ex.
 ```
 http://nationalparks-anugraha-msa.apps.rhpds3x.openshift.opentlc.com/ws/data/all
 ```
-6. Deploy web application deployment using java image and source code from git
+
+### Deploy parksmap web in development environment
+
+1. Deploy web application deployment using java image and source code from git
 ```
 oc create -f https://raw.githubusercontent.com/adithaha/parksmap-web/master/ose3/application-template.json
 oc new-app parksmap-web
 ```
 It may take 5-10 minutes to complete build the application, you can monitor in openshift web console, see if there sign '1 of 1 pods' on the right side of nationalparks application.
-7. Check if web application is deployed correctly in dev environment
+
+2. Check if web application is deployed correctly in dev environment
 ```
 oc get route
 ```
