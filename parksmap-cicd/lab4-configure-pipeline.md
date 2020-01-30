@@ -31,7 +31,7 @@ Now we have all environment and Jenkins set. Now we will check the environments 
 
 1. Open and login into OpenShift web console via browser
 ```
-https://<openshift>
+https://<openshift-web-console>
 ```
 2. Go to DEV environment (userx-dev), check if application is up and running (blue circle)
 3. Go to TEST environment (userx-test), check if application is up and running (blue circle)
