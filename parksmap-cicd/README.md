@@ -1,7 +1,10 @@
 # workshop-cicd
 
-OpenShift Console:
-https://loadbalancer.7070.example.opentlc.com
+OpenShift Web Console:
+https://console-openshift-console.apps.cluster-jakarta-fbff.jakarta-fbff.example.opentlc.com
+
+OpenShift CLI Console:
+https://api.cluster-jakarta-fbff.jakarta-fbff.example.opentlc.com:6443
 
 User: 
 user1....user15
