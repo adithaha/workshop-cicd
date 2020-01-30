@@ -30,6 +30,8 @@ oc new-app postgresql-ephemeral -e POSTGRESQL_USER=postgres -e POSTGRESQL_PASSWO
 oc new-app --image-stream=<userx>-dev/nationalparks:promoteToQA --name=nationalparks -e POSTGRE_HOST=postgresql -e POSTGRE_PORT=5432 -e POSTGRE_DB_NAME=postgres -e POSTGRE_USERNAME=postgres -e POSTGRE_PASSWORD=postgres
 oc new-app --image-stream=<userx>-dev/parksmap:promoteToQA --name=parksmap
 ```
+This will be faster than in dev environment, since we are reusing dev build.
+
 7. Create route to the application with port mapping 8080
 ```
 oc expose service nationalparks --name=nationalparks --port=8080
