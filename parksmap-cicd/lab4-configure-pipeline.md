@@ -2,9 +2,9 @@
 
 Now we have all deployment set in dev, test and prod. Note down the web URL, for example:
 ```
-DEV: http://parksmap-userx-dev.apps.rhpds3x.openshift.opentlc.com
-TEST: http://parksmap-userx-dev.apps.rhpds3x.openshift.opentlc.com
-PROD: http://parksmap-userx-dev.apps.rhpds3x.openshift.opentlc.com
+DEV: http://parksmap-user99-dev.apps.cluster-jakarta-fbff.jakarta-fbff.example.opentlc.com
+TEST: http://parksmap-user99-dev.apps.cluster-jakarta-fbff.jakarta-fbff.example.opentlc.com
+PROD: http://parksmap-user99-dev.apps.cluster-jakarta-fbff.jakarta-fbff.example.opentlc.com
 ```
 Now we will create CI/CD pipeline for web component with step below:
 ```
