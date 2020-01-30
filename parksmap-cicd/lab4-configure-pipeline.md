@@ -37,12 +37,12 @@ https://<openshift-web-console>
 3. Go to TEST environment (userx-test), check if application is up and running (blue circle)
 4. Go to PROD environment (userx-prod), check if application is up and running (blue circle)
 5. Go to CI/CD environment (userx-cicd), check if jenkins is up and running (blue circle)
-6. Create pipeline in CI/CD environment
+6. On CICD project, create default pipeline
 ```
-Add to Project - Import YAML - paste pipeline template script below - change name to your specific user
+cicd project - (+) icon on top right - paste pipeline template script below - change name to your specific user
 ```
 ```
-apiVersion: v1
+apiVersion: build.openshift.io/v1
 kind: BuildConfig
 metadata:
   name: <userx>-parksmap-pipeline
@@ -64,7 +64,7 @@ spec:
 ```
 7. Configure pipeline
 ```
-Builds - Build Configs - <userx>-parksmap-pipeline - Edit Build Config
+Builds - Build Configs - <userx>-parksmap-pipeline - YAML
 ```
 Replace jenkinsfile script under 'jenkinsfile: |-' tag with below. Don't forget to put correct <userx>:
 ```
@@ -114,6 +114,7 @@ Replace jenkinsfile script under 'jenkinsfile: |-' tag with below. Don't forget 
             }
         }
 ```
+Save
 
 ### Try out the pipeline
 
@@ -121,7 +122,7 @@ Replace jenkinsfile script under 'jenkinsfile: |-' tag with below. Don't forget 
 ```
 Builds - Build Config - <userx>-parksmap-pipeline
 ```
-2. Start Build
+2. Actions - Start Build
 3. You should see some progress up to Promote to Testing
 ```
 Build - Deploy to Development - Promote to Testing (Input Required)
