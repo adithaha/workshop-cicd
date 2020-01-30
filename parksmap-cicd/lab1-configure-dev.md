@@ -5,7 +5,7 @@ Note: For all procedure below, replace all userx to your user account, eg. user4
 
 1. Login into openshift (you need openshift web console url correctly)
 ```
-oc login -u userx https://<openshift-web-console>
+oc login -u userx https://<openshift-cli-console>
 ```
 2. Create development project
 ```
