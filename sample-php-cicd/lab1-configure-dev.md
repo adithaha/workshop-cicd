@@ -13,7 +13,7 @@ oc new-project userx-dev
 ```
 3. Create new application deployment using PHP image and source code from git
 ```
-oc new-app php:7.1~https://github.com/adithaha/workshop-cicd.git --context-dir=/sample-php-website --name=sample-php-website
+oc new-app php:7.1~https://github.com/adithaha/workshop-cicd.git --context-dir=/sample-php-cicd/sample-php-website --name=sample-php-website
 ```
 4. Application is being build now, check build log
 ```
